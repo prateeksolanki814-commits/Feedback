@@ -1,32 +1,21 @@
 import streamlit as st
 from components.feedback_form import show_feedback_form
+from utils.config import STORE_INFO
 
-# Page configuration
-st.set_page_config(
-    page_title="Feedback Form - Supermarket Feedback System",
-    page_icon="📝",
-    layout="wide"
-)
+st.set_page_config(page_title=f"Feedback - {STORE_INFO['name']}", page_icon="📝", layout="wide")
 
-# Custom CSS
 st.markdown("""
 <style>
-    .feedback-header {
-        font-size: 2.5rem;
-        color: #FF4B4B;
-        text-align: center;
-        margin-bottom: 2rem;
+    .form-header {
+        background: linear-gradient(135deg, #FF4B4B 0%, #FF8E53 100%);
+        color: white; padding: 1.5rem; border-radius: 12px; text-align: center; margin-bottom: 2rem;
     }
+    .form-header h1 { margin: 0; font-size: 2rem; }
 </style>
 """, unsafe_allow_html=True)
 
-# Page content
-st.markdown('<h1 class="feedback-header">📝 Customer Feedback Form</h1>', unsafe_allow_html=True)
-st.markdown("---")
-
-# Display feedback form
+st.markdown('<div class="form-header"><h1>📝 Customer Feedback Form</h1></div>', unsafe_allow_html=True)
 show_feedback_form()
 
-# Back to home button
-if st.button("🏠 Back to Home"):
-    st.switch_page("app.py")
+st.markdown("---")
+st.page_link("app.py", label="🏠 Back to Home", use_container_width=True)

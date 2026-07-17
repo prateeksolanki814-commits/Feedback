@@ -15,17 +15,14 @@ def show_admin_panel():
             username = st.text_input("Username")
             password = st.text_input("Password", type="password")
             login_button = st.form_submit_button("Login", use_container_width=True)
-            
             if login_button:
                 if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
                     st.session_state.admin_logged_in = True
-                    st.success("✅ Login successful!")
                     st.rerun()
                 else:
                     st.error("❌ Invalid credentials!")
     else:
         st.success("✅ Logged in as Admin")
-        
         feedback_data = load_feedback()
         if not feedback_data:
             st.info("ℹ️ No feedback data available.")
@@ -35,10 +32,10 @@ def show_admin_panel():
         tab1, tab2, tab3 = st.tabs(["📊 Dashboard", "📝 Manage Feedback", "📤 Export"])
         
         with tab1:
-            col1, col2, col3 = st.columns(3)
-            with col1: st.metric("Total Feedback", len(df))
-            with col2: st.metric("Average Rating", f"{df['rating'].mean():.2f}")
-            with col3: st.metric("Negative Feedback", len(df[df['rating'] <= 2]))
+            c1, c2, c3 = st.columns(3)
+            with c1: st.metric("Total Feedback", len(df))
+            with c2: st.metric("Average Rating", f"{df['rating'].mean():.2f}")
+            with c3: st.metric("Negative Feedback", len(df[df['rating'] <= 2]))
             
             st.markdown("#### Rating Distribution by Category")
             pivot_df = df.groupby(['category', 'rating']).size().unstack(fill_value=0).reset_index()
@@ -49,12 +46,9 @@ def show_admin_panel():
         
         with tab2:
             st.markdown("#### All Feedback Records")
-            
-            col1, col2 = st.columns(2)
-            with col1:
-                rating_filter = st.multiselect("Filter by Rating", options=[1, 2, 3, 4, 5], default=[1, 2, 3, 4, 5])
-            with col2:
-                search_term = st.text_input("🔍 Search Comments")
+            c1, c2 = st.columns(2)
+            with c1: rating_filter = st.multiselect("Filter by Rating", options=[1, 2, 3, 4, 5], default=[1, 2, 3, 4, 5])
+            with c2: search_term = st.text_input("🔍 Search Comments")
             
             filtered_df = df[df['rating'].isin(rating_filter)]
             if search_term:
@@ -74,7 +68,6 @@ def show_admin_panel():
             st.markdown("#### Export Feedback Data")
             st.markdown(get_table_download_link(df, "supermarket_feedback", "csv"), unsafe_allow_html=True)
             st.markdown(get_table_download_link(df, "supermarket_feedback", "json"), unsafe_allow_html=True)
-            
             if st.button("🚪 Logout", use_container_width=True):
                 st.session_state.admin_logged_in = False
                 st.rerun()

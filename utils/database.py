@@ -1,8 +1,8 @@
 import json
 import os
 from datetime import datetime
-from utils.config import FEEDBACK_FILE
 import pandas as pd
+from utils.config import FEEDBACK_FILE
 
 def init_db():
     """Initialize the feedback file if it doesn't exist."""
@@ -24,7 +24,7 @@ def save_feedback(feedback_data):
     with open(FEEDBACK_FILE, 'w') as f:
         json.dump(feedback_data, f, indent=2)
 
-def add_feedback(customer_name, rating, category, comments, store_visit_date):
+def add_feedback(customer_name, rating, category, comments, store_visit_date, contact_info=None):
     """Add a new feedback entry."""
     feedback = load_feedback()
     new_entry = {
@@ -35,7 +35,8 @@ def add_feedback(customer_name, rating, category, comments, store_visit_date):
         "comments": comments,
         "store_visit_date": store_visit_date,
         "submission_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "sentiment": analyze_sentiment(comments)
+        "sentiment": analyze_sentiment(comments),
+        "contact_info": contact_info or {}
     }
     feedback.append(new_entry)
     save_feedback(feedback)
@@ -47,40 +48,10 @@ def delete_feedback(feedback_id):
     feedback = [f for f in feedback if f['id'] != feedback_id]
     save_feedback(feedback)
 
-def get_feedback_by_id(feedback_id):
-    """Get a feedback entry by ID."""
-    feedback = load_feedback()
-    for f in feedback:
-        if f['id'] == feedback_id:
-            return f
-    return None
-
-def get_feedback_stats():
-    """Get basic statistics about feedback."""
-    feedback = load_feedback()
-    if not feedback:
-        return {
-            "total": 0,
-            "average_rating": 0,
-            "positive_count": 0,
-            "negative_count": 0,
-            "category_counts": {}
-        }
-    
-    df = pd.DataFrame(feedback)
-    
-    return {
-        "total": len(df),
-        "average_rating": df['rating'].mean(),
-        "positive_count": len(df[df['rating'] >= 4]),
-        "negative_count": len(df[df['rating'] <= 2]),
-        "category_counts": df['category'].value_counts().to_dict()
-    }
-
 def analyze_sentiment(text):
     """Simple sentiment analysis based on keywords."""
-    positive_words = ['good', 'great', 'excellent', 'amazing', 'wonderful', 'fantastic', 'love', 'best']
-    negative_words = ['bad', 'terrible', 'awful', 'horrible', 'worst', 'hate', 'poor', 'disappointing']
+    positive_words = ['good', 'great', 'excellent', 'amazing', 'wonderful', 'fantastic', 'love', 'best', 'fresh', 'clean', 'helpful', 'friendly']
+    negative_words = ['bad', 'terrible', 'awful', 'horrible', 'worst', 'hate', 'poor', 'disappointing', 'slow', 'rude', 'expired', 'dirty']
     
     text_lower = text.lower()
     positive_count = sum(1 for word in positive_words if word in text_lower)
@@ -92,3 +63,18 @@ def analyze_sentiment(text):
         return "Negative"
     else:
         return "Neutral"
+
+def get_feedback_stats():
+    """Get basic statistics about feedback."""
+    feedback = load_feedback()
+    if not feedback:
+        return {"total": 0, "average_rating": 0, "positive_count": 0, "negative_count": 0}
+    
+    df = pd.DataFrame(feedback)
+    return {
+        "total": len(df),
+        "average_rating": df['rating'].mean(),
+        "positive_count": len(df[df['rating'] >= 4]),
+        "negative_count": len(df[df['rating'] <= 2]),
+        "category_counts": df['category'].value_counts().to_dict()
+    }

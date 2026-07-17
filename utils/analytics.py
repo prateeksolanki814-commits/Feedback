@@ -13,7 +13,7 @@ def show_analytics():
     if not feedback_data:
         st.info("ℹ️ No feedback data available yet. Be the first to share your feedback!")
         if st.button("📝 Submit Feedback"):
-            st.switch_page("pages/1_📝_Feedback_Form.py")
+            st.switch_page("pages/1_Feedback_Form.py")
         return
     
     # Convert to DataFrame

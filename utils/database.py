@@ -2,6 +2,7 @@ import json
 import os
 from datetime import datetime
 from utils.config import FEEDBACK_FILE
+import pandas as pd
 
 def init_db():
     """Initialize the feedback file if it doesn't exist."""
@@ -91,6 +92,3 @@ def analyze_sentiment(text):
         return "Negative"
     else:
         return "Neutral"
-
-# Add pandas import at the top
-import pandas as pd

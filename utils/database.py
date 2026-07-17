@@ -15,8 +15,7 @@ def load_feedback():
     try:
         with open(FEEDBACK_FILE, 'r') as f:
             return json.load(f)
-    except Exception as e:
-        print(f"Error loading feedback: {e}")
+    except Exception:
         return []
 
 def save_feedback(feedback_data):
@@ -63,18 +62,3 @@ def analyze_sentiment(text):
         return "Negative"
     else:
         return "Neutral"
-
-def get_feedback_stats():
-    """Get basic statistics about feedback."""
-    feedback = load_feedback()
-    if not feedback:
-        return {"total": 0, "average_rating": 0, "positive_count": 0, "negative_count": 0}
-    
-    df = pd.DataFrame(feedback)
-    return {
-        "total": len(df),
-        "average_rating": df['rating'].mean(),
-        "positive_count": len(df[df['rating'] >= 4]),
-        "negative_count": len(df[df['rating'] <= 2]),
-        "category_counts": df['category'].value_counts().to_dict()
-    }

@@ -89,11 +89,11 @@ col1, col2 = st.columns([1, 1])
 
 with col1:
     if st.button("📝 Submit Feedback Now", use_container_width=True):
-        st.switch_page("pages/1_📝_Feedback_Form.py")
+        st.switch_page("pages/1_Feedback_Form.py")
 
 with col2:
     if st.button("📊 View Analytics", use_container_width=True):
-        st.switch_page("pages/2_📊_Analytics.py")
+        st.switch_page("pages/2_Analytics.py")
 
 # Footer
 st.markdown("---")
